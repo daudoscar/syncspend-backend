@@ -19,7 +19,6 @@
 
 ## Project Structure
 
-    ```bash
     ├── config          # Configuration files
     ├── controllers     # Handlers for HTTP requests
     ├── dto             # Data Transfer Objects for requests/responses
@@ -30,7 +29,6 @@
     ├── routes          # API route definitions
     ├── services        # Business logic
     ├── main.go         # Application entry point
-    ```
 
 ## Installation
 
