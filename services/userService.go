@@ -8,21 +8,20 @@ import (
 )
 
 type UserInput struct {
+	Name     string `json:"name"`
 	Username string `json:"username"`
-	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 func CreateUser(input UserInput) error {
-	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
 	user := models.User{
+		Name:     input.Name,
 		Username: input.Username,
-		Email:    input.Email,
 		Password: string(hashedPassword),
 	}
 

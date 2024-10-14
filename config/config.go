@@ -1,40 +1,58 @@
 package config
 
 import (
-	"fmt"
 	"log"
-	"os"
+	"time"
 
-	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/spf13/viper"
 )
 
-var DB *gorm.DB
+type Config struct {
+	DBUser     string
+	DBPassword string
+	DBHost     string
+	DBPort     string
+	DBName     string
+	JWTSecret  string
+	Addr       string
+	Port       string
+	AccessTTL  time.Duration
+	RefreshTTL time.Duration
+}
 
-func ConnectDatabase() {
-	// Load .env file
-	err := godotenv.Load()
+var ENV *Config
+
+func LoadConfig() *Config {
+	viper.SetConfigFile(".env")
+	viper.AutomaticEnv()
+
+	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("No .env file found, reading environment variables")
 	}
 
-	// Get environment variables
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
-
-	// Data source name (DSN) format
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		user, password, host, port, dbName)
-
-	// Connect to the database
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	accessTTL, err := time.ParseDuration(viper.GetString("ACCESS_TTL"))
 	if err != nil {
-		log.Fatal("Failed to connect to the database:", err)
+		accessTTL = 24 * time.Hour
 	}
 
-	log.Println("Database connection successful")
+	refreshTTL, err := time.ParseDuration(viper.GetString("REFRESH_TTL"))
+	if err != nil {
+		refreshTTL = 7 * 24 * time.Hour
+	}
+
+	ENV = &Config{
+		DBUser:     viper.GetString("DB_USER"),
+		DBPassword: viper.GetString("DB_PASSWORD"),
+		DBHost:     viper.GetString("DB_HOST"),
+		DBPort:     viper.GetString("DB_PORT"),
+		DBName:     viper.GetString("DB_NAME"),
+		JWTSecret:  viper.GetString("JWT_SECRET"),
+		Addr:       viper.GetString("ADDR"),
+		Port:       viper.GetString("PORT"),
+		AccessTTL:  accessTTL,
+		RefreshTTL: refreshTTL,
+	}
+
+	return ENV
 }
