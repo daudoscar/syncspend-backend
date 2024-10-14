@@ -19,40 +19,40 @@
 
 ## Project Structure
 
-```bash
-├── config          # Configuration files
-├── controllers     # Handlers for HTTP requests
-├── dto             # Data Transfer Objects for requests/responses
-├── helpers         # Utility functions
-├── middleware      # Middleware for authentication, logging, etc.
-├── models          # Data models for GORM
-├── repositories    # Database interaction logic
-├── routes          # API route definitions
-├── services        # Business logic
-├── main.go         # Application entry point
-```bash
+    ```bash
+    ├── config          # Configuration files
+    ├── controllers     # Handlers for HTTP requests
+    ├── dto             # Data Transfer Objects for requests/responses
+    ├── helpers         # Utility functions
+    ├── middleware      # Middleware for authentication, logging, etc.
+    ├── models          # Data models for GORM
+    ├── repositories    # Database interaction logic
+    ├── routes          # API route definitions
+    ├── services        # Business logic
+    ├── main.go         # Application entry point
+    ```
 
 ## Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/daudoscar/syncspend-backend.git
-   ```bash
+   ```
 
 2. Navigate into the project directory:
    ```bash
    cd syncspend-backend
-   ```bash
+   ```
 
 3. Install Dependencies:
    ```bash
    go mod download
-   ```bash
+   ```
 
 4. Run the server:
    ```bash
    go run main.go
-   ```bash
+   ```
 
 ## Credits
 
