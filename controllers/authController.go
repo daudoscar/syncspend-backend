@@ -54,31 +54,26 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	userResponse, err := (&services.AuthService{}).AuthenticateUser(loginRequest)
+	CredentialResponseDTO, err := (&services.AuthService{}).AuthenticateUser(loginRequest)
 	if err != nil {
 		helpers.ErrorResponse(c, err)
 		return
 	}
 
-	accessToken, err := helpers.GenerateJWT(userResponse.Username)
+	accessToken, err := helpers.GenerateJWT(CredentialResponseDTO.Username)
 	if err != nil {
 		helpers.ErrorResponse(c, err)
 		return
 	}
 
-	refreshToken, err := helpers.GenerateRefreshToken(userResponse.Username)
+	refreshToken, err := helpers.GenerateRefreshToken(CredentialResponseDTO.Username)
 	if err != nil {
 		helpers.ErrorResponse(c, err)
 		return
 	}
 
-	credentialResponse := dto.CredentialResponseDTO{
-		ID:           userResponse.ID,
-		Name:         userResponse.Name,
-		Username:     userResponse.Username,
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}
+	CredentialResponseDTO.AccessToken = accessToken
+	CredentialResponseDTO.RefreshToken = refreshToken
 
-	helpers.SuccessResponseWithData(c, "Login successful", credentialResponse)
+	helpers.SuccessResponseWithData(c, "Login successful", CredentialResponseDTO)
 }

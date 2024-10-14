@@ -70,20 +70,21 @@ func (s *AuthService) RegisterUser(data dto.CreateUserDTO) (dto.CredentialRespon
 	return credentialResponse, nil
 }
 
-func (s *AuthService) AuthenticateUser(data dto.LoginCredentialsDTO) (dto.UserResponseDTO, error) {
+func (s *AuthService) AuthenticateUser(data dto.LoginCredentialsDTO) (dto.CredentialResponseDTO, error) {
 	user, err := repositories.GetUserByUsername(data.Username)
 	if err != nil {
-		return dto.UserResponseDTO{}, errors.New("user not found")
+		return dto.CredentialResponseDTO{}, errors.New("user not found")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
 	if err != nil {
-		return dto.UserResponseDTO{}, nil
+		return dto.CredentialResponseDTO{}, nil
 	}
 
-	userResponse := dto.UserResponseDTO{
+	userResponse := dto.CredentialResponseDTO{
 		ID:       user.ID,
 		Name:     user.Name,
+		Profile:  user.Profile,
 		Username: user.Username,
 	}
 
