@@ -30,24 +30,29 @@
 ├── routes          # API route definitions
 ├── services        # Business logic
 ├── main.go         # Application entry point
+```bash
 
 ## Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/daudoscar/syncspend-backend.git
+   ```bash
 
 2. Navigate into the project directory:
    ```bash
    cd syncspend-backend
+   ```bash
 
 3. Install Dependencies:
    ```bash
    go mod download
+   ```bash
 
 4. Run the server:
    ```bash
    go run main.go
+   ```bash
 
 ## Credits
 
