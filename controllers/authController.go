@@ -37,6 +37,7 @@ func Register(c *gin.Context) {
 	credentialResponse := dto.CredentialResponseDTO{
 		ID:           userResponse.ID,
 		Name:         userResponse.Name,
+		Profile:      userResponse.Profile,
 		Username:     userResponse.Username,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,

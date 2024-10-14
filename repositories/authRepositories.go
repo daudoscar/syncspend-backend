@@ -7,7 +7,7 @@ import (
 
 type UserRepository struct{}
 
-func InsertUser(user models.User) error {
+func InsertUser(user *models.User) error {
 	if err := config.DB.Create(&user).Error; err != nil {
 		return err
 	}
