@@ -5,7 +5,7 @@ import (
 	"syncspend/models"
 )
 
-type UserRepository struct{}
+type AuthRepository struct{}
 
 func InsertUser(user *models.User) error {
 	if err := config.DB.Create(&user).Error; err != nil {
