@@ -81,11 +81,23 @@ func (s *AuthService) AuthenticateUser(data dto.LoginCredentialsDTO) (dto.Creden
 		return dto.CredentialResponseDTO{}, nil
 	}
 
+	accessToken, err := helpers.GenerateJWT(user.Username)
+	if err != nil {
+		return dto.CredentialResponseDTO{}, fmt.Errorf("failed to generate access token: %v", err)
+	}
+
+	refreshToken, err := helpers.GenerateRefreshToken(user.Username)
+	if err != nil {
+		return dto.CredentialResponseDTO{}, fmt.Errorf("failed to generate refresh token: %v", err)
+	}
+
 	userResponse := dto.CredentialResponseDTO{
-		ID:       user.ID,
-		Name:     user.Name,
-		Profile:  user.Profile,
-		Username: user.Username,
+		ID:           user.ID,
+		Name:         user.Name,
+		Profile:      user.Profile,
+		Username:     user.Username,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}
 
 	return userResponse, nil

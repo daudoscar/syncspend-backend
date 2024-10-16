@@ -39,20 +39,5 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := helpers.GenerateJWT(CredentialResponseDTO.Username)
-	if err != nil {
-		helpers.ErrorResponse(c, err)
-		return
-	}
-
-	refreshToken, err := helpers.GenerateRefreshToken(CredentialResponseDTO.Username)
-	if err != nil {
-		helpers.ErrorResponse(c, err)
-		return
-	}
-
-	CredentialResponseDTO.AccessToken = accessToken
-	CredentialResponseDTO.RefreshToken = refreshToken
-
 	helpers.SuccessResponseWithData(c, "Login successful", CredentialResponseDTO)
 }
