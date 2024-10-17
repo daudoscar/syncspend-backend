@@ -9,14 +9,14 @@ import (
 )
 
 func Register(c *gin.Context) {
-	var request dto.CreateUserDTO
+	var request *dto.CreateUserDTO
 
 	if err := c.ShouldBind(&request); err != nil {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
 	}
 
-	credentialResponse, err := (&services.AuthService{}).RegisterUser(request)
+	credentialResponse, err := (&services.AuthService{}).RegisterUser(*request)
 	if err != nil {
 		helpers.ErrorResponse(c, err)
 		return
@@ -26,14 +26,14 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	var loginRequest dto.LoginCredentialsDTO
+	var loginRequest *dto.LoginCredentialsDTO
 
 	if err := c.ShouldBind(&loginRequest); err != nil {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
 	}
 
-	CredentialResponseDTO, err := (&services.AuthService{}).AuthenticateUser(loginRequest)
+	CredentialResponseDTO, err := (&services.AuthService{}).AuthenticateUser(*loginRequest)
 	if err != nil {
 		helpers.ErrorResponse(c, err)
 		return
