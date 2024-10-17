@@ -22,7 +22,11 @@ func SetupRouter() *gin.Engine {
 	protected := router.Group("/protected")
 	protected.Use(middleware.AuthenticateJWT())
 	{
-		// Protected Routes
+		protected.GET("/foo", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "bar",
+			})
+		})
 	}
 
 	return router

@@ -1,14 +1,9 @@
 package dto
 
-import (
-	"mime/multipart"
-)
-
 type CreateUserDTO struct {
-	Name     string                `form:"name" binding:"required"`
-	Username string                `form:"username" binding:"required"`
-	Password string                `form:"password" binding:"required"`
-	Profile  *multipart.FileHeader `form:"profile"`
+	Name     string `form:"name" binding:"required"`
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
 }
 
 type LoginCredentialsDTO struct {
