@@ -1,31 +1,54 @@
 package services
 
 import (
-	"syncspend/config"
-	"syncspend/models"
+	"errors"
+
+	"syncspend/dto"
+	"syncspend/helpers"
+	"syncspend/repositories"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserInput struct {
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
+type UserService struct{}
 
-func CreateUser(input UserInput) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+func (s *UserService) UpdateUser(data dto.UpdateUserDTO) (dto.CredentialResponseDTO, error) {
+	user, err := repositories.GetUserByID(data.ID)
 	if err != nil {
-		return err
+		return dto.CredentialResponseDTO{}, errors.New("user not found")
 	}
 
-	user := models.User{
-		Name:     input.Name,
-		Username: input.Username,
-		Password: string(hashedPassword),
+	if data.Name != "" {
+		user.Name = data.Name
 	}
 
-	// Save user to database
-	result := config.DB.Create(&user)
-	return result.Error
+	if data.Profile != nil {
+		profileImageURL, err := helpers.UploadProfileImage(data.Profile, int(user.ID))
+		if err != nil {
+			return dto.CredentialResponseDTO{}, err
+		}
+
+		user.Profile = profileImageURL
+	}
+
+	if data.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return dto.CredentialResponseDTO{}, errors.New("failed to hash password")
+		}
+		user.Password = string(hashedPassword)
+	}
+
+	if err := repositories.UpdateUser(user); err != nil {
+		return dto.CredentialResponseDTO{}, errors.New("failed to update user")
+	}
+
+	userResponse := dto.CredentialResponseDTO{
+		ID:       user.ID,
+		Name:     user.Name,
+		Profile:  user.Profile,
+		Username: user.Username,
+	}
+
+	return userResponse, nil
 }
