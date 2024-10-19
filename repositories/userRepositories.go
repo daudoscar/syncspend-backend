@@ -5,7 +5,7 @@ import (
 	"syncspend/models"
 )
 
-func GetUserByID(userID string) (*models.User, error) {
+func GetUserByID(userID uint64) (*models.User, error) {
 	var user models.User
 	if err := config.DB.Where("id = ?", userID).First(&user).Error; err != nil {
 		return nil, err

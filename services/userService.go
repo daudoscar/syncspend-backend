@@ -52,3 +52,19 @@ func (s *UserService) UpdateUser(data dto.UpdateUserDTO) (dto.CredentialResponse
 
 	return userResponse, nil
 }
+
+func (s *UserService) GetUserByID(data dto.GetUserDTO) (dto.GetUserResponse, error) {
+	user, err := repositories.GetUserByID(data.ID)
+	if err != nil {
+		return dto.GetUserResponse{}, errors.New("user not found")
+	}
+
+	userResponse := dto.GetUserResponse{
+		ID:       user.ID,
+		Name:     user.Name,
+		Profile:  user.Profile,
+		Username: user.Username,
+	}
+
+	return userResponse, nil
+}

@@ -8,6 +8,7 @@ type User struct {
 	Profile   string    `gorm:"type:varchar(255)"`
 	Username  string    `gorm:"type:varchar(255);unique;not null"`
 	Password  string    `gorm:"type:varchar(255);not null"`
+	IsDeleted bool      `gorm:"default:false"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }

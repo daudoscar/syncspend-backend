@@ -8,10 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateUser(c *gin.Context) {
-	var request dto.UpdateUserDTO
+func GetUserByID(c *gin.Context) {
+	var request *dto.GetUserDTO
 
-	if err := c.ShouldBindJSON(&request); err != nil {
+	if err := c.ShouldBind(&request); err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
+		return
+	}
+
+}
+
+func UpdateUser(c *gin.Context) {
+	var request *dto.UpdateUserDTO
+
+	if err := c.ShouldBind(&request); err != nil {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
 	}
@@ -21,7 +31,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	userResponse, err := (&services.UserService{}).UpdateUser(request)
+	userResponse, err := (&services.UserService{}).UpdateUser(*request)
 	if err != nil {
 		helpers.ErrorResponse(c, err)
 		return
