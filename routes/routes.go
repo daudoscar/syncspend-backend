@@ -27,6 +27,12 @@ func SetupRouter() *gin.Engine {
 				"message": "bar",
 			})
 		})
+
+		protected.GET("/portofolio", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "asd",
+			})
+		})
 	}
 
 	return router
