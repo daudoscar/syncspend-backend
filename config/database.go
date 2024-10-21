@@ -30,6 +30,7 @@ func ConnectDatabase() {
 	err = DB.AutoMigrate(
 		&models.User{},
 		&models.Plan{},
+		&models.Portofolio{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database tables: %v", err)
