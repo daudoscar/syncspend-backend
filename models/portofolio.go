@@ -6,5 +6,5 @@ type Portofolio struct {
 	Saving       uint64  `gorm:"not null"`
 	TotalIncome  float64 `gorm:"not null"`
 	TotalExpense float64 `gorm:"not null"`
-	SpendingRate float64 `gorm:"-`
+	SpendingRate float64 `gorm:"-"`
 }
