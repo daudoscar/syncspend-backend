@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"errors"
+	"strconv"
 	"syncspend/dto"
 	"syncspend/helpers"
 	"syncspend/services"
@@ -15,6 +17,14 @@ func CreatePlan(c *gin.Context) {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
 	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	request.ID_Owner = strconv.FormatUint(userID.(uint64), 10)
 
 	planResponse, err := (&services.PlanService{}).CreatePlan(*request)
 	if err != nil {

@@ -29,12 +29,12 @@ func (s *AuthService) RegisterUser(data dto.CreateUserDTO) (dto.CredentialRespon
 		return dto.CredentialResponseDTO{}, err
 	}
 
-	accessToken, err := helpers.GenerateJWT(user.Username)
+	accessToken, err := helpers.GenerateJWT(user.ID, user.Username)
 	if err != nil {
 		return dto.CredentialResponseDTO{}, fmt.Errorf("failed to generate access token: %v", err)
 	}
 
-	refreshToken, err := helpers.GenerateRefreshToken(user.Username)
+	refreshToken, err := helpers.GenerateRefreshToken(user.ID, user.Username)
 	if err != nil {
 		return dto.CredentialResponseDTO{}, fmt.Errorf("failed to generate refresh token: %v", err)
 	}
@@ -62,12 +62,12 @@ func (s *AuthService) AuthenticateUser(data dto.LoginCredentialsDTO) (dto.Creden
 		return dto.CredentialResponseDTO{}, errors.New("invalid credentials")
 	}
 
-	accessToken, err := helpers.GenerateJWT(user.Username)
+	accessToken, err := helpers.GenerateJWT(user.ID, user.Username)
 	if err != nil {
 		return dto.CredentialResponseDTO{}, fmt.Errorf("failed to generate access token: %v", err)
 	}
 
-	refreshToken, err := helpers.GenerateRefreshToken(user.Username)
+	refreshToken, err := helpers.GenerateRefreshToken(user.ID, user.Username)
 	if err != nil {
 		return dto.CredentialResponseDTO{}, fmt.Errorf("failed to generate refresh token: %v", err)
 	}
