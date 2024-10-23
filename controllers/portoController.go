@@ -8,9 +8,8 @@ import (
 )
 
 func GetPortoID(c *gin.Context) {
-	var request dto.GetPortoDTO // No need for a pointer here, structs are passed by value in Go
+	var request dto.GetPortoDTO
 
-	// Bind the incoming JSON request to the DTO struct
 	if err := c.ShouldBindJSON(&request); err != nil {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
