@@ -5,7 +5,7 @@ import (
 )
 
 type CreatePlanDTO struct {
-	ID_Owner    string `form:"id_owner" binding:"required"`
+	ID_Owner    string `form:"id_owner"`
 	Title       string `form:"title" binding:"required"`
 	Description string `form:"description"`
 }

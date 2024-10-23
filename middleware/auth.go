@@ -23,7 +23,6 @@ func AuthenticateJWT() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		claims, err := helpers.ValidateJWT(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
@@ -32,6 +31,8 @@ func AuthenticateJWT() gin.HandlerFunc {
 		}
 
 		c.Set("username", claims.Username)
+		c.Set("userID", claims.UserID)
+
 		c.Next()
 	}
 }

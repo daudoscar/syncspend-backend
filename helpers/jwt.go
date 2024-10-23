@@ -8,13 +8,15 @@ import (
 )
 
 type Claims struct {
+	UserID   uint64 `json:"user_id"`
 	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
-func GenerateJWT(username string) (string, error) {
+func GenerateJWT(userID uint64, username string) (string, error) {
 	expirationTime := time.Now().Add(config.ENV.AccessTTL)
 	claims := &Claims{
+		UserID:   userID,
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
@@ -22,14 +24,13 @@ func GenerateJWT(username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
 	return token.SignedString([]byte(config.ENV.JWTSecret))
 }
 
-func GenerateRefreshToken(username string) (string, error) {
-
+func GenerateRefreshToken(userID uint64, username string) (string, error) {
 	expirationTime := time.Now().Add(config.ENV.RefreshTTL)
 	claims := &Claims{
+		UserID:   userID,
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
@@ -37,7 +38,6 @@ func GenerateRefreshToken(username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
 	return token.SignedString([]byte(config.ENV.JWTSecret))
 }
 
