@@ -2,7 +2,9 @@ package services
 
 import (
 	"errors"
+	"syncspend/dto"
 	"syncspend/models"
+	"syncspend/repositories"
 
 	"gorm.io/gorm"
 )
@@ -15,14 +17,14 @@ func NewPortfolioService(db *gorm.DB) *PortfolioService {
 	return &PortfolioService{DB: db}
 }
 
-func (s *PortfolioService) GetPortfolioByOwnerAndID(idOwner uint64, portfolioID uint64) (*models.Portofolio, error) {
-	var portfolio models.Portofolio
-
-	if err := s.DB.Where("id_owner = ? AND id = ?", idOwner, portfolioID).First(&portfolio).Error; err != nil {
+func (s *PortfolioService) GetPortfolioByOwnerAndID(data dto.GetPortoDTO) (*models.Portofolio, error) {
+	portfolio, err := repositories.GetPortfolioByOwnerAndID(data)
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("portfolio not found")
 		}
 		return nil, err
 	}
-	return &portfolio, nil
+
+	return portfolio, nil
 }

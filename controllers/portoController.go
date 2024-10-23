@@ -3,12 +3,13 @@ package controllers
 import (
 	"syncspend/dto"
 	"syncspend/helpers"
+	"syncspend/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetPortoID(c *gin.Context) {
-	var request dto.GetPortoDTO
+	var request dto.GetPortoDTO // No need for a pointer here, structs are passed by value in Go
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
@@ -25,9 +26,9 @@ func GetPortoID(c *gin.Context) {
 		return
 	}
 
-	portfolio, err := service.GetPortfolioByOwnerAndID(request.ID_Owner, request.ID)
+	portfolio, err := (&services.PortfolioService{}).GetPortfolioByOwnerAndID(*request)
 	if err != nil {
-		helpers.ErrorResponse(c, "Portfolio not found", err.Error())
+		helpers.ErrorResponse(c, err)
 		return
 	}
 
