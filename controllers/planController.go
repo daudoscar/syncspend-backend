@@ -35,7 +35,7 @@ func CreatePlan(c *gin.Context) {
 	helpers.SuccessResponseWithData(c, "Plan created successfully", planResponse)
 }
 
-func GetUserByPlan(c *gin.Context) {
+func GetUserPlan(c *gin.Context) {
 	var request *dto.GetPlanDTO
 
 	if err := c.ShouldBind(&request); err != nil {

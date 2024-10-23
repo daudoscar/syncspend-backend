@@ -9,7 +9,7 @@ import (
 )
 
 func GetPortoID(c *gin.Context) {
-	var request dto.GetPortoDTO
+	var request *dto.GetPortoDTO
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())

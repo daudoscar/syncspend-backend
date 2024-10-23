@@ -55,7 +55,7 @@ func (s *PlanService) UpdatePlan(data dto.PlanResponseDTO) (dto.PlanResponseDTO,
 		return dto.PlanResponseDTO{}, errors.New("failed to update plan")
 	}
 
-	planResponse := dto.PlanResponseDTO{
+	planResponse := &dto.PlanResponseDTO{
 		ID:                updatedPlan.ID,
 		ID_Owner:          updatedPlan.ID_Owner,
 		Title:             updatedPlan.Title,
@@ -66,7 +66,7 @@ func (s *PlanService) UpdatePlan(data dto.PlanResponseDTO) (dto.PlanResponseDTO,
 		UpdatedAt:         updatedPlan.UpdatedAt,
 	}
 
-	return planResponse, nil
+	return *planResponse, nil
 }
 
 func (s *PlanService) DeletePlan(data dto.GetPlanDTO) error {
