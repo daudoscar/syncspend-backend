@@ -31,6 +31,7 @@ func ConnectDatabase() {
 		&models.User{},
 		&models.Plan{},
 		&models.Portofolio{},
+		&models.Transaksi{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database tables: %v", err)
