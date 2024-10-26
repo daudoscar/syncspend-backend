@@ -39,6 +39,51 @@ func (s *PlanService) CreatePlan(data dto.CreatePlanDTO) (dto.PlanResponseDTO, e
 	return *planResponse, nil
 }
 
+func (s *PlanService) GetUserPlans(userID uint64) ([]dto.PlanResponseDTO, error) {
+	plans, err := repositories.FindUserPlans(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(plans) == 0 {
+		return []dto.PlanResponseDTO{}, nil
+	}
+
+	var plansResponse []dto.PlanResponseDTO
+	for _, plan := range plans {
+		planResponse := dto.PlanResponseDTO{
+			ID:                plan.ID,
+			ID_Owner:          plan.ID_Owner,
+			Title:             plan.Title,
+			Description:       plan.Description,
+			InviteCode:        plan.InviteCode,
+			InviteCodeExpires: plan.InviteCodeExpires,
+			CreatedAt:         plan.CreatedAt,
+			UpdatedAt:         plan.UpdatedAt,
+		}
+		plansResponse = append(plansResponse, planResponse)
+	}
+
+	return plansResponse, nil
+}
+
+func (s *PlanService) GetPlan(planID uint64) (dto.PlanResponseDTO, error) {
+	var plan models.Plan
+
+	planResponse := dto.PlanResponseDTO{
+		ID:                plan.ID,
+		ID_Owner:          plan.ID_Owner,
+		Title:             plan.Title,
+		Description:       plan.Description,
+		InviteCode:        plan.InviteCode,
+		InviteCodeExpires: plan.InviteCodeExpires,
+		CreatedAt:         plan.CreatedAt,
+		UpdatedAt:         plan.UpdatedAt,
+	}
+
+	return planResponse, nil
+}
+
 func (s *PlanService) UpdatePlan(data dto.PlanResponseDTO) (dto.PlanResponseDTO, error) {
 
 	inviteCode, inviteCodeExpires := helpers.GenerateInviteCode()

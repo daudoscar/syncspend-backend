@@ -42,6 +42,20 @@ func GetUserPlan(c *gin.Context) {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
 	}
+	userIDParam := c.Param("userID")
+	userID, err := strconv.ParseUint(userIDParam, 10, 64)
+	if err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid user ID", err.Error())
+		return
+	}
+
+	plansResponse, err := (&services.PlanService{}).GetUserPlans(userID)
+	if err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponseWithData(c, "Plans retrieved successfully", plansResponse)
 }
 
 func GetPlan(c *gin.Context) {
@@ -51,6 +65,21 @@ func GetPlan(c *gin.Context) {
 		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
 		return
 	}
+
+	planIDParam := c.Param("planID")
+	planID, err := strconv.ParseUint(planIDParam, 10, 64)
+	if err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid plan ID", err.Error())
+		return
+	}
+
+	planResponse, err := (&services.PlanService{}).GetPlan(planID)
+	if err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponseWithData(c, "Plan retrieved successfully", planResponse)
 }
 
 func UpdatePlan(c *gin.Context) {

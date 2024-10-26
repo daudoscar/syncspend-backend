@@ -11,8 +11,9 @@ type CreatePlanDTO struct {
 }
 
 type GetPlanDTO struct {
-	ID    uint64 `json:"id" binding:"required"`
-	Title string `json:"title" binding:"required"`
+	ID       uint64 `json:"id" binding:"required"`
+	ID_Owner uint64 `json:"id" binding:"required"`
+	Title    string `json:"title" binding:"required"`
 }
 
 type PlanResponseDTO struct {
