@@ -16,6 +16,8 @@ func SetupRouter() *gin.Engine {
 	protected.Use(middleware.AuthenticateJWT())
 	{
 		protected.POST("/plans", controllers.CreatePlan)
+
+		protected.POST("/transaksi", controllers.CreateTransaksi)
 	}
 
 	return router

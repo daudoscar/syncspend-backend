@@ -7,4 +7,6 @@ type Portofolio struct {
 	TotalIncome  float64 `gorm:"not null"`
 	TotalExpense float64 `gorm:"not null"`
 	SpendingRate float64 `gorm:"-"`
+
+	Payer User `gorm:"foreignKey:ID_Owner;references:ID"`
 }
