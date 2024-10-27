@@ -10,6 +10,12 @@ type CreatePlanDTO struct {
 	Description string `form:"description"`
 }
 
+type UpdatePlanDTO struct {
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description"`
+	ID_Owner    string `json:"-"`
+}
+
 type PlanResponseDTO struct {
 	ID                uint64    `json:"id"`
 	ID_Owner          string    `json:"id_owner"`

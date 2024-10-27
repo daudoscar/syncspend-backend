@@ -38,3 +38,34 @@ func (s *PlanService) CreatePlan(data dto.CreatePlanDTO) (dto.PlanResponseDTO, e
 
 	return *response, nil
 }
+
+func (s *PlanService) UpdatePlan(planID uint64, data dto.UpdatePlanDTO) (*dto.PlanResponseDTO, error) {
+	existingPlan, err := repositories.GetPlanByID(planID)
+	if err != nil {
+		return nil, errors.New("Plan not found")
+	}
+
+	if existingPlan.ID_Owner != data.ID_Owner {
+		return nil, errors.New("User is not the owner of the plan")
+	}
+
+	existingPlan.Title = data.Title
+	existingPlan.Description = data.Description
+
+	if err := repositories.UpdatePlan(existingPlan); err != nil {
+		return &dto.PlanResponseDTO{}, errors.New("failed to update plan")
+	}
+
+	response := &dto.PlanResponseDTO{
+		ID:                existingPlan.ID,
+		ID_Owner:          existingPlan.ID_Owner,
+		Title:             existingPlan.Title,
+		Description:       existingPlan.Description,
+		InviteCode:        existingPlan.InviteCode,
+		InviteCodeExpires: existingPlan.InviteCodeExpires,
+		CreatedAt:         existingPlan.CreatedAt,
+		UpdatedAt:         existingPlan.UpdatedAt,
+	}
+
+	return response, nil
+}
