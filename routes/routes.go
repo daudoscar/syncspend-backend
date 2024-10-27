@@ -15,9 +15,29 @@ func SetupRouter() *gin.Engine {
 	protected := router.Group("/protected")
 	protected.Use(middleware.AuthenticateJWT())
 	{
-		protected.POST("/plans", controllers.CreatePlan)
+		plans := protected.Group("/plans")
+		{
+			plans.POST("", controllers.CreatePlan)
+			plans.PUT("/:id", controllers.UpdatePlan)
+			plans.GET("/:id", controllers.CreatePlan)
+			plans.DELETE("/:id", controllers.CreatePlan)
+			plans.GET("", controllers.CreatePlan)
+		}
 
-		protected.POST("/transaksi", controllers.CreateTransaksi)
+		transaksi := protected.Group("/transaksi")
+		{
+			transaksi.POST("", controllers.CreateTransaksi)
+			transaksi.PUT("/:id", controllers.CreateTransaksi)
+			transaksi.GET("/:id", controllers.CreateTransaksi)
+			transaksi.DELETE("/:id", controllers.CreateTransaksi)
+			transaksi.GET("", controllers.CreateTransaksi)
+		}
+
+		users := protected.Group("/users")
+		{
+			users.GET("/profile", controllers.GetUserByID)
+			users.PUT("/profile", controllers.UpdateUser)
+		}
 	}
 
 	return router
