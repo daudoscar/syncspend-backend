@@ -17,11 +17,11 @@ func SetupRouter() *gin.Engine {
 	{
 		plans := protected.Group("/plans")
 		{
+			plans.GET("/:id", controllers.CreatePlan)
 			plans.POST("", controllers.CreatePlan)
 			plans.PUT("/:id", controllers.UpdatePlan)
-			plans.GET("/:id", controllers.CreatePlan)
-			plans.DELETE("/:id", controllers.CreatePlan)
-			plans.GET("", controllers.CreatePlan)
+			plans.DELETE("/:id", controllers.DeletePlan)
+			plans.PUT("/:id/recover", controllers.RecoverPlan)
 		}
 
 		transaksi := protected.Group("/transaksi")

@@ -39,13 +39,13 @@ func UpdatePlan(c *gin.Context) {
 	var request *dto.UpdatePlanDTO
 
 	if err := c.ShouldBindJSON(&request); err != nil {
-		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
+		helpers.ValidationErrorResponse(c, "invalid request", err.Error())
 		return
 	}
 
 	userID, exists := c.Get("userID")
 	if !exists {
-		helpers.ErrorResponse(c, errors.New("User not authenticated"))
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
 		return
 	}
 
@@ -53,7 +53,7 @@ func UpdatePlan(c *gin.Context) {
 
 	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		helpers.ErrorResponse(c, errors.New("Invalid plan ID"))
+		helpers.ErrorResponse(c, errors.New("invalid plan ID"))
 		return
 	}
 
@@ -63,5 +63,47 @@ func UpdatePlan(c *gin.Context) {
 		return
 	}
 
-	helpers.SuccessResponseWithData(c, "Plan updated successfully", planResponse)
+	helpers.SuccessResponseWithData(c, "plan updated successfully", planResponse)
+}
+
+func DeletePlan(c *gin.Context) {
+	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		helpers.ErrorResponse(c, errors.New("invalid plan ID"))
+		return
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	if err := (&services.PlanService{}).DeletePlan(planID, userID.(uint64)); err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponse(c, "plan deleted successfully")
+}
+
+func RecoverPlan(c *gin.Context) {
+	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		helpers.ErrorResponse(c, errors.New("invalid plan ID"))
+		return
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	if err := (&services.PlanService{}).DeletePlan(planID, userID.(uint64)); err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponse(c, "plan deleted successfully")
 }

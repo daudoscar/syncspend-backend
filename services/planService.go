@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"strconv"
 	"syncspend/dto"
 	"syncspend/helpers"
 	"syncspend/models"
@@ -42,11 +43,11 @@ func (s *PlanService) CreatePlan(data dto.CreatePlanDTO) (dto.PlanResponseDTO, e
 func (s *PlanService) UpdatePlan(planID uint64, data dto.UpdatePlanDTO) (*dto.PlanResponseDTO, error) {
 	existingPlan, err := repositories.GetPlanByID(planID)
 	if err != nil {
-		return nil, errors.New("Plan not found")
+		return nil, errors.New("plan not found")
 	}
 
 	if existingPlan.ID_Owner != data.ID_Owner {
-		return nil, errors.New("User is not the owner of the plan")
+		return nil, errors.New("user is not the owner of the plan")
 	}
 
 	existingPlan.Title = data.Title
@@ -68,4 +69,46 @@ func (s *PlanService) UpdatePlan(planID uint64, data dto.UpdatePlanDTO) (*dto.Pl
 	}
 
 	return response, nil
+}
+
+func (s *PlanService) DeletePlan(planID, userID uint64) error {
+	existingPlan, err := repositories.GetPlanByID(planID)
+	if err != nil {
+		return errors.New("plan not found")
+	}
+
+	if existingPlan.ID_Owner != strconv.FormatUint(userID, 10) {
+		return errors.New("user is not the owner of the plan")
+	}
+
+	existingPlan.IsDeleted = true
+
+	if err := repositories.UpdatePlan(existingPlan); err != nil {
+		return errors.New("failed to delete plan")
+	}
+
+	return nil
+}
+
+func (s *PlanService) RecoverPlan(planID, userID uint64) error {
+	existingPlan, err := repositories.GetPlanByID(planID)
+	if err != nil {
+		return errors.New("plan not found")
+	}
+
+	if existingPlan.ID_Owner != strconv.FormatUint(userID, 10) {
+		return errors.New("user is not the owner of the plan")
+	}
+
+	if !existingPlan.IsDeleted {
+		return errors.New("plan is active")
+	}
+
+	existingPlan.IsDeleted = false
+
+	if err := repositories.UpdatePlan(existingPlan); err != nil {
+		return errors.New("failed to delete plan")
+	}
+
+	return nil
 }
