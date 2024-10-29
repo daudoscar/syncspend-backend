@@ -139,8 +139,16 @@ func (s *PlanService) JoinPlan(data *dto.JoinPlanDTO) error {
 		return errors.New("invalid invite code or plan not found")
 	}
 	existingMember, err := repositories.GetMemberByPlanAndUser(plan.ID, data.UserID)
-	if err == nil && existingMember != nil {
+	if err != nil {
+		return errors.New("unable to verify membership status at this time")
+	}
+
+	if existingMember != nil && !existingMember.IsDeleted {
 		return errors.New("user is already a member of this plan")
+	}
+
+	if existingMember != nil && existingMember.IsDeleted {
+		return repositories.ReactivateMember(existingMember.ID)
 	}
 
 	planMember := &models.PlanMember{
@@ -156,7 +164,7 @@ func (s *PlanService) JoinPlan(data *dto.JoinPlanDTO) error {
 func (s *PlanService) LeavePlan(data *dto.LeavePlanDTO) error {
 	existingMember, err := repositories.GetMemberByPlanAndUser(data.PlanID, data.UserID)
 	if err != nil {
-		return err
+		return errors.New("unable to verify membership status at this time")
 	}
 	if existingMember == nil {
 		return errors.New("user is not a member of this plan")

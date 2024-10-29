@@ -61,3 +61,13 @@ func LeavePlan(planMemberID uint64) error {
 			"is_deleted": true,
 		}).Error
 }
+
+func ReactivateMember(planMemberID uint64) error {
+	return config.DB.Model(&models.PlanMember{}).
+		Where("id = ?", planMemberID).
+		Updates(map[string]interface{}{
+			"is_deleted": false,
+			"left_at":    nil,
+			"joined_at":  time.Now(),
+		}).Error
+}
