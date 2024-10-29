@@ -8,5 +8,5 @@ type Portofolio struct {
 	TotalExpense float64 `gorm:"not null"`
 	SpendingRate float64 `gorm:"-"`
 
-	Payer User `gorm:"foreignKey:ID_Owner;references:ID"`
+	Owner User `gorm:"foreignKey:ID_Owner;references:ID"`
 }

@@ -40,7 +40,7 @@ func CreatePlan(c *gin.Context) {
 		return
 	}
 
-	request.ID_Owner = strconv.FormatUint(userID.(uint64), 10)
+	request.ID_Owner = userID.(uint64)
 
 	planResponse, err := (&services.PlanService{}).CreatePlan(*request)
 	if err != nil {
@@ -65,7 +65,7 @@ func UpdatePlan(c *gin.Context) {
 		return
 	}
 
-	request.ID_Owner = strconv.FormatUint(userID.(uint64), 10)
+	request.ID_Owner = userID.(uint64)
 
 	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -122,4 +122,52 @@ func RecoverPlan(c *gin.Context) {
 	}
 
 	helpers.SuccessResponse(c, "plan recovered successfully")
+}
+
+func JoinPlan(c *gin.Context) {
+	var request *dto.JoinPlanDTO
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
+		return
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	request.UserID = userID.(uint64)
+
+	if err := (&services.PlanService{}).JoinPlan(request); err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponse(c, "Successfully joined the plan")
+}
+
+func LeavePlan(c *gin.Context) {
+	var request *dto.LeavePlanDTO
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
+		return
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	request.UserID = userID.(uint64)
+
+	if err := (&services.PlanService{}).LeavePlan(request); err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponse(c, "Successfully left the plan")
 }

@@ -2,11 +2,11 @@ package services
 
 import (
 	"errors"
-	"strconv"
 	"syncspend/dto"
 	"syncspend/helpers"
 	"syncspend/models"
 	"syncspend/repositories"
+	"time"
 )
 
 type PlanService struct{}
@@ -97,7 +97,7 @@ func (s *PlanService) DeletePlan(planID, userID uint64) error {
 		return errors.New("plan not found")
 	}
 
-	if existingPlan.ID_Owner != strconv.FormatUint(userID, 10) {
+	if existingPlan.ID_Owner != userID {
 		return errors.New("user is not the owner of the plan")
 	}
 
@@ -116,7 +116,7 @@ func (s *PlanService) RecoverPlan(planID, userID uint64) error {
 		return errors.New("plan not found")
 	}
 
-	if existingPlan.ID_Owner != strconv.FormatUint(userID, 10) {
+	if existingPlan.ID_Owner != userID {
 		return errors.New("user is not the owner of the plan")
 	}
 
@@ -131,4 +131,36 @@ func (s *PlanService) RecoverPlan(planID, userID uint64) error {
 	}
 
 	return nil
+}
+
+func (s *PlanService) JoinPlan(data *dto.JoinPlanDTO) error {
+	plan, err := repositories.GetPlanByInviteCode(data.InviteCode)
+	if err != nil {
+		return errors.New("invalid invite code or plan not found")
+	}
+	existingMember, err := repositories.GetMemberByPlanAndUser(plan.ID, data.UserID)
+	if err == nil && existingMember != nil {
+		return errors.New("user is already a member of this plan")
+	}
+
+	planMember := &models.PlanMember{
+		ID_Plan:  plan.ID,
+		ID_User:  data.UserID,
+		IsAdmin:  false,
+		JoinedAt: time.Now(),
+	}
+
+	return repositories.InsertMember(planMember)
+}
+
+func (s *PlanService) LeavePlan(data *dto.LeavePlanDTO) error {
+	existingMember, err := repositories.GetMemberByPlanAndUser(data.PlanID, data.UserID)
+	if err != nil {
+		return err
+	}
+	if existingMember == nil {
+		return errors.New("user is not a member of this plan")
+	}
+
+	return repositories.LeavePlan(existingMember.ID)
 }

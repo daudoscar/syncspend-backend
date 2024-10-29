@@ -5,7 +5,7 @@ import (
 )
 
 type CreatePlanDTO struct {
-	ID_Owner    string `form:"id_owner"`
+	ID_Owner    uint64 `form:"id_owner"`
 	Title       string `form:"title" binding:"required"`
 	Description string `form:"description"`
 }
@@ -13,12 +13,22 @@ type CreatePlanDTO struct {
 type UpdatePlanDTO struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description"`
-	ID_Owner    string `json:"-"`
+	ID_Owner    uint64 `json:"-"`
+}
+
+type JoinPlanDTO struct {
+	UserID     uint64 `json:"-"`
+	InviteCode string `json:"invite_code" binding:"required"`
+}
+
+type LeavePlanDTO struct {
+	PlanID uint64 `json:"plan_id" binding:"required"`
+	UserID uint64 `json:"-"`
 }
 
 type PlanResponseDTO struct {
 	ID                uint64    `json:"id"`
-	ID_Owner          string    `json:"id_owner"`
+	ID_Owner          uint64    `json:"id_owner"`
 	Title             string    `json:"title"`
 	Description       string    `json:"description"`
 	InviteCode        string    `json:"invite_code,omitempty"`

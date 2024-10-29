@@ -22,6 +22,9 @@ func SetupRouter() *gin.Engine {
 			plans.PUT("/:id", controllers.UpdatePlan)
 			plans.DELETE("/:id", controllers.DeletePlan)
 			plans.PUT("/:id/recover", controllers.RecoverPlan)
+
+			plans.POST("/join", controllers.JoinPlan)
+			plans.DELETE("/leave", controllers.LeavePlan)
 		}
 
 		transaksi := protected.Group("/transaksi")
