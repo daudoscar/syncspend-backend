@@ -10,6 +10,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetPlanById(c *gin.Context) {
+	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		helpers.ErrorResponse(c, errors.New("invalid plan ID"))
+		return
+	}
+
+	planResponse, err := (&services.PlanService{}).GetPlanByID(planID)
+	if err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponseWithData(c, "plan retrieved successfully", planResponse)
+}
+
 func CreatePlan(c *gin.Context) {
 	var request *dto.CreatePlanDTO
 
@@ -100,10 +116,10 @@ func RecoverPlan(c *gin.Context) {
 		return
 	}
 
-	if err := (&services.PlanService{}).DeletePlan(planID, userID.(uint64)); err != nil {
+	if err := (&services.PlanService{}).RecoverPlan(planID, userID.(uint64)); err != nil {
 		helpers.ErrorResponse(c, err)
 		return
 	}
 
-	helpers.SuccessResponse(c, "plan deleted successfully")
+	helpers.SuccessResponse(c, "plan recovered successfully")
 }

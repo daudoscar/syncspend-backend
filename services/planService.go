@@ -11,6 +11,26 @@ import (
 
 type PlanService struct{}
 
+func (s *PlanService) GetPlanByID(planID uint64) (*dto.PlanResponseDTO, error) {
+	plan, err := repositories.GetPlanByID(planID)
+	if err != nil {
+		return nil, errors.New("plan not found")
+	}
+
+	response := &dto.PlanResponseDTO{
+		ID:                plan.ID,
+		ID_Owner:          plan.ID_Owner,
+		Title:             plan.Title,
+		Description:       plan.Description,
+		InviteCode:        plan.InviteCode,
+		InviteCodeExpires: plan.InviteCodeExpires,
+		CreatedAt:         plan.CreatedAt,
+		UpdatedAt:         plan.UpdatedAt,
+	}
+
+	return response, nil
+}
+
 func (s *PlanService) CreatePlan(data dto.CreatePlanDTO) (dto.PlanResponseDTO, error) {
 	inviteCode, inviteCodeExpires := helpers.GenerateInviteCode()
 

@@ -17,7 +17,7 @@ func SetupRouter() *gin.Engine {
 	{
 		plans := protected.Group("/plans")
 		{
-			plans.GET("/:id", controllers.CreatePlan)
+			plans.GET("/:id", controllers.GetPlanById)
 			plans.POST("", controllers.CreatePlan)
 			plans.PUT("/:id", controllers.UpdatePlan)
 			plans.DELETE("/:id", controllers.DeletePlan)
