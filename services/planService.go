@@ -172,3 +172,73 @@ func (s *PlanService) LeavePlan(data *dto.LeavePlanDTO) error {
 
 	return repositories.LeavePlan(existingMember.ID)
 }
+
+func (s *PlanService) PromoteMemberPlan(PlanID uint64, data dto.PromoteMemberDTO) error {
+	PlanCredentials, err := repositories.GetPlanMemberByID(PlanID)
+	if err != nil {
+		return errors.New("plan not found")
+	}
+
+	if PlanCredentials.IsAdmin {
+		return errors.New("Targeted user is already an admin")
+	}
+	PlanCredentials.IsAdmin = true
+
+	PlanInfo, err := repositories.GetPlanByID(PlanID)
+	if err != nil {
+		return err
+	}
+	if PlanInfo.ID_Owner != data.OwnerID {
+		return errors.New("user does not have access to promote")
+	}
+
+	existingMember, err := repositories.GetMemberByPlanAndUser(PlanID, data.UserID)
+	if err != nil {
+		return errors.New("unable to verify membership status at this time")
+	}
+	if existingMember == nil {
+		return errors.New("user is not a member of this plan")
+	}
+
+	err = repositories.UpdatePlanMember(PlanCredentials)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *PlanService) DemoteAdminPlan(PlanID uint64, data dto.PromoteMemberDTO) error {
+	PlanCredentials, err := repositories.GetPlanMemberByID(PlanID)
+	if err != nil {
+		return errors.New("plan not found")
+	}
+
+	if !PlanCredentials.IsAdmin {
+		return errors.New("Targeted user is not an admin")
+	}
+	PlanCredentials.IsAdmin = false
+
+	PlanInfo, err := repositories.GetPlanByID(PlanID)
+	if err != nil {
+		return err
+	}
+	if PlanInfo.ID_Owner != data.OwnerID {
+		return errors.New("user does not have access to promote")
+	}
+
+	existingMember, err := repositories.GetMemberByPlanAndUser(PlanID, data.UserID)
+	if err != nil {
+		return errors.New("unable to verify membership status at this time")
+	}
+	if existingMember == nil {
+		return errors.New("user is not a member of this plan")
+	}
+
+	err = repositories.UpdatePlanMember(PlanCredentials)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

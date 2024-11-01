@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"syncspend/config"
 	"syncspend/models"
 	"time"
@@ -38,6 +39,34 @@ func GetPlanByInviteCode(inviteCode string) (*models.Plan, error) {
 		return nil, err
 	}
 	return &plan, nil
+}
+
+func GetPlanMemberByID(ID uint64) (*models.PlanMember, error) {
+	var PlanMember models.PlanMember
+	if err := config.DB.Where("id_plan = ?", ID).First(&PlanMember).Error; err != nil {
+		return nil, err
+	}
+	return &PlanMember, nil
+}
+
+func UpdatePlanMember(planMember *models.PlanMember) error {
+	if err := config.DB.Save(&planMember).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetUserOwnership(PlanID, UserID uint64) (bool, error) {
+	var plan models.Plan
+	err := config.DB.Where("id = ? AND id_owner = ?", PlanID, UserID).First(&plan).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		} else {
+			return false, err
+		}
+	}
+	return true, nil
 }
 
 func GetMemberByPlanAndUser(planID, userID uint64) (*models.PlanMember, error) {

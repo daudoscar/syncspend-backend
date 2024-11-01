@@ -171,3 +171,61 @@ func LeavePlan(c *gin.Context) {
 
 	helpers.SuccessResponse(c, "Successfully left the plan")
 }
+
+func PromoteMemberPlan(c *gin.Context) {
+	var request *dto.PromoteMemberDTO
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		helpers.ErrorResponse(c, errors.New("invalid plan ID"))
+		return
+	}
+
+	request.OwnerID = userID.(uint64)
+
+	if err := (&services.PlanService{}).PromoteMemberPlan(planID, *request); err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponse(c, "Successfully promoted member")
+}
+
+func DemoteAdminPlan(c *gin.Context) {
+	var request *dto.PromoteMemberDTO
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		helpers.ValidationErrorResponse(c, "Invalid request", err.Error())
+	}
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	planID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		helpers.ErrorResponse(c, errors.New("invalid plan ID"))
+		return
+	}
+
+	request.OwnerID = userID.(uint64)
+
+	if err := (&services.PlanService{}).DemoteAdminPlan(planID, *request); err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponse(c, "Successfully demoted member")
+}

@@ -26,6 +26,11 @@ type LeavePlanDTO struct {
 	UserID uint64 `json:"-"`
 }
 
+type PromoteMemberDTO struct {
+	UserID  uint64 `json:"user_id" binding:"required"`
+	OwnerID uint64 `json:"-"`
+}
+
 type PlanResponseDTO struct {
 	ID                uint64    `json:"id"`
 	ID_Owner          uint64    `json:"id_owner"`
