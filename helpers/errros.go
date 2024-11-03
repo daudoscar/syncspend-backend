@@ -28,5 +28,7 @@ func GetErrorResponse(err error) (CustomError, int) {
 		return errorResponse, http.StatusNotFound
 	}
 
+	errorResponse.Message = err.Error()
+
 	return errorResponse, http.StatusInternalServerError
 }
