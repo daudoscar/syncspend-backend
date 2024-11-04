@@ -43,3 +43,35 @@ func (s *TransaksiService) CreateTransaksi(data dto.CreateTransaksiDTO) (*dto.Tr
 
 	return response, nil
 }
+
+func (s *TransaksiService) ResolveTransaksi(userID, transaksiID uint64) (*dto.TransaksiResponseDTO, error) {
+	TransaksiData, err := repositories.GetTransaksiById(transaksiID)
+	if err != nil {
+		return nil, errors.New("unable to retrieve transaksi at this moment")
+	}
+
+	if TransaksiData.ID_Payer != userID {
+		return nil, errors.New("user does not have authorization to resolve transaksi")
+	}
+
+	TransaksiData.IsResolved = true
+
+	err = repositories.UpdateTranskasi(TransaksiData)
+	if err != nil {
+		return nil, errors.New("unable to update transaksi at this moment")
+	}
+
+	response := &dto.TransaksiResponseDTO{
+		ID:          TransaksiData.ID,
+		Title:       TransaksiData.Title,
+		ID_Payer:    TransaksiData.ID_Payer,
+		ID_Receiver: *TransaksiData.ID_Receiver,
+		ID_Plan:     TransaksiData.ID_Plan,
+		Nominal:     TransaksiData.Nominal,
+		IsResolved:  TransaksiData.IsResolved,
+		CreatedAt:   TransaksiData.CreatedAt,
+		UpdatedAt:   TransaksiData.UpdatedAt,
+	}
+
+	return response, nil
+}
