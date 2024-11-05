@@ -54,7 +54,11 @@ func (s *TransaksiService) ResolveTransaksi(userID, transaksiID uint64) (*dto.Tr
 		return nil, errors.New("user does not have authorization to resolve transaksi")
 	}
 
-	TransaksiData.IsResolved = true
+	if !TransaksiData.IsResolved {
+		TransaksiData.IsResolved = true
+	} else {
+		TransaksiData.IsResolved = false
+	}
 
 	err = repositories.UpdateTranskasi(TransaksiData)
 	if err != nil {

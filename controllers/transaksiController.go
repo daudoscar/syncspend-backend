@@ -56,3 +56,25 @@ func ResolveTransaction(c *gin.Context) {
 
 	helpers.SuccessResponseWithData(c, "Transaction resolved successfully", transaksiResponse)
 }
+
+func UnresolveTransaction(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		helpers.ErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	transaksiID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		helpers.ErrorResponse(c, errors.New("invalid transaction ID"))
+		return
+	}
+
+	transaksiResponse, err := (&services.TransaksiService{}).ResolveTransaksi(userID.(uint64), transaksiID)
+	if err != nil {
+		helpers.ErrorResponse(c, err)
+		return
+	}
+
+	helpers.SuccessResponseWithData(c, "Transaction resolved successfully", transaksiResponse)
+}
